@@ -8,3 +8,5 @@ class BinaryTreeNode<T> {
     this.right = null;
   }
 }
+
+export default BinaryTreeNode;
