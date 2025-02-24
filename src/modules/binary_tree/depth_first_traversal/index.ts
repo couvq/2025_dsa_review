@@ -23,20 +23,35 @@ const buildBasicExample = (): BinaryTreeNode<string> => {
   return a;
 };
 
-const dfs = (root: BinaryTreeNode<string> | null) => {
-  if (!root) return;
-
+const dfsIterative = (
+  root: BinaryTreeNode<string> | null
+): (string | undefined)[] => {
+  if (!root) return [];
+  const results = [];
   const stack = [root];
 
   while (stack.length) {
     const current = stack.pop();
-    console.log(current?.val);
+    results.push(current?.val);
 
     if (current?.right) stack.push(current.right);
     if (current?.left) stack.push(current.left);
   }
+
+  return results;
 };
 
-// should print out the dfs of our basic example
+const dfsRecursive = (
+  root: BinaryTreeNode<string> | null
+): (string | undefined)[] => {
+  if (!root) return [];
+  return [root.val, ...dfsRecursive(root.left), ...dfsRecursive(root.right)];
+};
+
+// should print out the depth first traversal of our basic example
 const root = buildBasicExample();
-dfs(root)
+const iterativeDfsResults = dfsIterative(root);
+console.log("Iterative results: \n", iterativeDfsResults);
+
+const recursiveDfsResults = dfsRecursive(root);
+console.log("Recursive results: \n", recursiveDfsResults);
