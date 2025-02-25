@@ -2,7 +2,7 @@ import BinaryTreeNode from "../abstractions";
 import { buildMaxRootToLeafPathSumExample } from "../examples";
 
 const maxRootToLeafPathSum = (root: BinaryTreeNode<number> | null): number => {
-  if (!root) return 0;
+  if (!root) return -Infinity;
   if (root.left === null && root.right === null) return root.val;
   return (
     root.val +
