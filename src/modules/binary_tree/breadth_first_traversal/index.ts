@@ -18,5 +18,33 @@ const bfs = (root: BinaryTreeNode<string> | null): (string | undefined)[] => {
   return results;
 };
 
+/**
+ * Returns a mapping of levels -> tree node values at each level
+ */
+const bfsWithLevels = (
+  root: BinaryTreeNode<string> | null
+): Map<number, Array<string>> => {
+  const result = new Map<number, Array<string>>();
+  if (root === null) return result;
+  const queue = [root];
+  let level = 1;
+
+  while (queue.length) {
+    const size = queue.length;
+    for (let i = 0; i < size; i++) {
+      const cur = queue.shift();
+      const nodesAtLevel = result.get(level) ?? []
+      // @ts-ignore
+      result.set(level, [...nodesAtLevel, cur.val])
+      if (cur?.left) queue.push(cur.left);
+      if (cur?.right) queue.push(cur.right);
+    }
+    level++
+  }
+
+  return result;
+};
+
 const root = buildBasicExample();
 console.log("Breadth first traversal: \n", bfs(root));
+console.log("Level mappings: ", bfsWithLevels(root))
