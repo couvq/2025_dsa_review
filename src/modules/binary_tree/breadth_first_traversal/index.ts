@@ -20,6 +20,7 @@ const bfs = (root: BinaryTreeNode<string> | null): (string | undefined)[] => {
 
 /**
  * Returns a mapping of levels -> tree node values at each level
+ * TODO - not efficient with my current queue as shift is a O(n) algo, implement my own queue that has O(1) enqueue and dequeue
  */
 const bfsWithLevels = (
   root: BinaryTreeNode<string> | null
