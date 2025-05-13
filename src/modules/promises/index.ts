@@ -1,40 +1,62 @@
-const nums = [1, 2, 3, 4, 5];
+/**
+ * getKey("foo") -> 12
+ * getKey("bar") -> 42
+ *
+ * want to only make the call once per x ms (1000ms in my mock function) 
+ * with all the vals we have called with rather than making multiple calls
+ *
+ * GET /v1/vals?keys=foo,bar
+ * Response:
+ * {
+ *  "foo": 12,
+ *  "bar": 42
+ * }
+ */
 
-const createNumPromise = (num: number): Promise<number> => {
+const mockAsyncCall = (keys: string[]): Promise<Record<string, number>> => {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(num);
-    }, Math.random() * 1000);
-  });
-};
-
-const numPromises = nums.map((val) => createNumPromise(val));
-
-const resolveAllPromisesInOrder = async () => {
-  try {
-    const nums = await Promise.all(numPromises);
-    return nums;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const resolvePromisesOutOfOrder = () => {
-  return new Promise((resolve, reject) => {
-    const res: void | number[] | PromiseLike<void> = [];
-    let numResolved = 0;
-    try {
-      numPromises.forEach(async (promise, index) => {
-        const num = await promise;
-        res.push(num);
-        numResolved++;
-        if (numResolved === numPromises.length) resolve(res);
-      });
-    } catch (error) {
-      console.error(error);
+    const res: Record<string, number> = {};
+    for (const key of keys) {
+      res[key] = Math.random() * 100;
     }
+    resolve(res);
   });
 };
 
-resolveAllPromisesInOrder().then((val) => console.log(val));
-resolvePromisesOutOfOrder().then((val) => console.log(val));
+const createGetKey = () => {
+  let keys: Array<string> = [];
+  let timeoutId: number | undefined = undefined;
+  let callbacks: Array<(val: number) => void> = [];
+
+  return (key: string, callback: (val: number) => void) => {
+    keys.push(key);
+    callbacks.push(callback);
+
+    if (timeoutId === undefined) {
+      timeoutId = setTimeout(async () => {
+        const response = await mockAsyncCall(keys);
+        console.log(response);
+        for (let i = 0; i < callbacks.length; i++) {
+          const callback = callbacks[i];
+          const key = keys[i];
+          callback(response[key]);
+        }
+        keys = [];
+        timeoutId = undefined;
+        callbacks = [];
+      }, 1000);
+    }
+  };
+};
+
+const callback = (val: number) => console.log(val);
+const getKey = createGetKey();
+getKey("foo", callback);
+getKey("bar", callback);
+getKey("baz", callback);
+setTimeout(() => {
+  getKey("should only call with one key", callback);
+}, 2000);
+setTimeout(() => {
+  getKey("should only call with one key second time", callback);
+}, 4000);
