@@ -2,7 +2,7 @@
  * getKey("foo") -> 12
  * getKey("bar") -> 42
  *
- * want to only make the call once per x ms (1000ms in my mock function) 
+ * want to only make the call once per x ms (I'll use 1000ms in my function) 
  * with all the vals we have called with rather than making multiple calls
  *
  * GET /v1/vals?keys=foo,bar
@@ -28,7 +28,7 @@ const createGetKey = () => {
   let timeoutId: number | undefined = undefined;
   let callbacks: Array<(val: number) => void> = [];
 
-  return (key: string, callback: (val: number) => void) => {
+  return (key: string, callback: (val: number) => void): void => {
     keys.push(key);
     callbacks.push(callback);
 
