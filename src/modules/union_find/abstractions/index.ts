@@ -3,13 +3,13 @@ class UnionFind {
   #parent: Map<number, number>;
   #rank: Map<number, number>;
 
-  constructor(n: number) {
+  constructor(nodes: number[]) {
     this.#parent = new Map();
     this.#rank = new Map();
 
-    for (let i = 0; i < n; i++) {
-      this.#parent.set(i, i);
-      this.#rank.set(i, 0);
+    for (let i = 0; i < nodes.length; i++) {
+      this.#parent.set(nodes[i], nodes[i]);
+      this.#rank.set(nodes[i], 0);
     }
   }
 
