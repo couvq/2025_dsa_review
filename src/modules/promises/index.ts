@@ -1,3 +1,12 @@
+type Ok<T> = {
+  value: T
+}
+
+type Exception<E> = {
+  message: E
+}
+
+type Result<T, E> = Ok<T> | Exception<E>
 /**
  * getKey("foo") -> 12
  * getKey("bar") -> 42
