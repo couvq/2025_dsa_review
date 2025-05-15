@@ -7,6 +7,22 @@ type Exception<E> = {
 }
 
 type Result<T, E> = Ok<T> | Exception<E>
+
+const resultOrError = (): Result<number, string> => {
+  const randomInt = Math.floor(Math.random() * 100)
+  if(randomInt % 2 === 0) return { value: randomInt }
+  return { message: 'an issue occurred'}
+}
+
+const result = resultOrError()
+console.log(result)
+
+const okOr = <T>(defaultVal: T): T | unknown => {
+  const res = resultOrError()
+  return res.hasOwnProperty('value') ? res : defaultVal
+}
+
+console.log(okOr(5))
 /**
  * getKey("foo") -> 12
  * getKey("bar") -> 42
